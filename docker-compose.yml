@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+   web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - ASPNETCORE_URLS=${EXPOSED_URLS}
+      - MAPPED_PORT=${MAPPED_PORT}
+      - MAPPING_PORT=${MAPPING_PORT}
+      - TESS_DATA_PATH=${TESS_DATA_PATH}
+      - TESS_LANG=${TESS_LANG}
+    image: ocr-backend-image
+    ports:
+      - "${MAPPING_PORT}:${MAPPED_PORT}"

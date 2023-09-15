@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS4014: To wywołanie nie jest oczekiwane, dlatego wykonywanie bieżącej metody będzie kontynuowane do czasu ukończenia wywołania
+dotnet_diagnostic.CS4014.severity = none
