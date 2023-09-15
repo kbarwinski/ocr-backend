@@ -35,6 +35,15 @@ if (!string.IsNullOrEmpty(envConnectionString) && !string.IsNullOrEmpty(envIdent
     builder.Configuration.AddInMemoryCollection(inMemoryConfig);
 }
 
+var portExists = int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var port);
+if (portExists)
+{
+    builder.WebHost.ConfigureKestrel(options =>
+    {
+        options.ListenAnyIP(port);
+    });
+}
+
 builder.Services.AddLogging();
 
 builder.Services.ConfigureApplication();
