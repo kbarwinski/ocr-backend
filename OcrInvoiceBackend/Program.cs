@@ -21,6 +21,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 var envConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
 var envIdentityConnectionString = Environment.GetEnvironmentVariable("HEROKU_POSTGRESQL_RED_URL");
+var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
+
 if (!string.IsNullOrEmpty(envConnectionString) && !string.IsNullOrEmpty(envIdentityConnectionString))
 {
     var convertedConnectionString = ConvertConnectionString(envConnectionString);
@@ -29,7 +31,9 @@ if (!string.IsNullOrEmpty(envConnectionString) && !string.IsNullOrEmpty(envIdent
     var inMemoryConfig = new Dictionary<string, string>
     {
         {"ConnectionStrings:PostgreSQL", convertedConnectionString},
-        {"ConnectionStrings:IdentityPostgreSQL", convertedIdentityConnectionString }
+        {"ConnectionStrings:IdentityPostgreSQL", convertedIdentityConnectionString },
+        {"Jwt:Key", jwtKey},
+        {"Jwt:Issuer","OCRInvoices"}
     };
 
     builder.Configuration.AddInMemoryCollection(inMemoryConfig);
