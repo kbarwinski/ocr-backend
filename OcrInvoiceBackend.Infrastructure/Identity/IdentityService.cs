@@ -46,7 +46,7 @@ namespace OcrInvoiceBackend.Infrastructure.Identity
         {
             var user = new ApplicationUser { UserName = email, Email = email };
             var result = await _userManager.CreateAsync(user, password);
-            
+
             if (result.Succeeded)
             {
                 return await AssignRoleAsync(user, roleName);

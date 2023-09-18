@@ -40,10 +40,10 @@ namespace OcrInvoiceBackend.Infrastructure
         public static void ConfigureIdentity(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("IdentityPostgreSQL");
-            services.AddDbContext<ApplicationDbContext>(opt => opt.UseNpgsql(connectionString));
+            services.AddDbContext<ApplicationIdentityDbContext>(opt => opt.UseNpgsql(connectionString));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddEntityFrameworkStores<ApplicationIdentityDbContext>()
                 .AddDefaultTokenProviders();
 
             services.Configure<IdentityOptions>(options =>

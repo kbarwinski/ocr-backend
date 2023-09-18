@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
+using OcrInvoiceBackend.Application.Common.Behaviors;
 using OcrInvoiceBackend.Application.Features.InvoiceFeatures.Models;
 using OcrInvoiceBackend.Domain.Entities;
 using System;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace OcrInvoiceBackend.Application.Features.InvoiceFeatures.Commands.UploadInvoices
 {
+    [RequiresRole("User")]
     public sealed record UploadInvoicesCommand(FileType Type, List<IFormFile> Files) : IRequest
     {
     }

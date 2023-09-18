@@ -48,7 +48,7 @@ var serviceScope = app.Services.CreateScope();
 var dataContext = serviceScope.ServiceProvider.GetService<DataContext>();
 dataContext?.Database.EnsureCreated();
 
-var identityContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
+var identityContext = serviceScope.ServiceProvider.GetService<ApplicationIdentityDbContext>();
 identityContext?.Database.EnsureCreated();
 
 if (app.Environment.IsDevelopment())
