@@ -8,45 +8,9 @@ using OcrInvoiceBackend.Infrastructure;
 using OcrInvoiceBackend.Infrastructure.Identity;
 using OcrInvoiceBackend.API.Middlewares;
 
-string ConvertConnectionString(string url)
-{
-    var uri = new Uri(url);
-    var userInfo = uri.UserInfo.Split(':');
-    return $"Server={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.Substring(1)};User Id={userInfo[0]};Password={userInfo[1]};";
-}
-
-DotNetEnv.Env.Load("../.env");
-
 var builder = WebApplication.CreateBuilder(args);
 
-var envConnectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-var envIdentityConnectionString = Environment.GetEnvironmentVariable("HEROKU_POSTGRESQL_RED_URL");
-var jwtKey = Environment.GetEnvironmentVariable("JWT_KEY");
-
-if (!string.IsNullOrEmpty(envConnectionString) && !string.IsNullOrEmpty(envIdentityConnectionString))
-{
-    var convertedConnectionString = ConvertConnectionString(envConnectionString);
-    var convertedIdentityConnectionString = ConvertConnectionString(envIdentityConnectionString);
-
-    var inMemoryConfig = new Dictionary<string, string>
-    {
-        {"ConnectionStrings:PostgreSQL", convertedConnectionString},
-        {"ConnectionStrings:IdentityPostgreSQL", convertedIdentityConnectionString },
-        {"Jwt:Key", jwtKey},
-        {"Jwt:Issuer","OCRInvoices"}
-    };
-
-    builder.Configuration.AddInMemoryCollection(inMemoryConfig);
-}
-
-var portExists = int.TryParse(Environment.GetEnvironmentVariable("PORT"), out var port);
-if (portExists)
-{
-    builder.WebHost.ConfigureKestrel(options =>
-    {
-        options.ListenAnyIP(port);
-    });
-}
+builder.ConfigureForEnvironment();
 
 builder.Services.AddLogging();
 

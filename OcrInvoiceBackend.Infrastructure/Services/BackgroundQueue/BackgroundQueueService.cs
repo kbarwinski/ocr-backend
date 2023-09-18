@@ -27,15 +27,18 @@ namespace OcrInvoiceBackend.Infrastructure.Services.BackgroundQueue
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                var workItem = await _taskQueue.DequeueAsync(cancellationToken);
-                if (workItem == null)
-                    continue;
-
                 try
                 {
-                    var res = await workItem(cancellationToken);
+                    var workItem = await _taskQueue.DequeueAsync(cancellationToken);
+                    if (workItem == null)
+                        continue;
 
+                    var res = await workItem(cancellationToken);
                     await _hubContext.Clients.All.ReceiveMessage(JsonConvert.SerializeObject(res));
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
                 }
                 catch (Exception ex)
                 {
