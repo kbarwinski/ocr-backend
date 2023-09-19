@@ -10,6 +10,5 @@ using System.Threading.Tasks;
 
 namespace OcrInvoiceBackend.Application.Features.StatisticsFeatures.Queries.GetTotalStatistics
 {
-    [RequiresRole("Admin")]
     public sealed record GetTotalStatisticsQuery(DateTime? Start, DateTime? End) : IRequest<GetTotalStatisticsResponse>;
 }

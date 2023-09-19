@@ -13,15 +13,20 @@ namespace OcrInvoiceBackend.Persistence.Migrations.Identity
     {
         private readonly IIdentityService _identityService;
 
+        private readonly string _adminEmail;
+        private readonly string _adminPassword;
+
         public _02_SeedExampleUsers(IIdentityService identityService)
         {
             _identityService = identityService;
+
+            _adminEmail = Environment.GetEnvironmentVariable("ADMIN_EMAIL");
+            _adminPassword = Environment.GetEnvironmentVariable("ADMIN_PASSWORD");
         }
 
-        public async override void Up()
+        public override void Up()
         {
-            await _identityService.CreateUserAsync("test1@wp.pl", "Test123456", "Admin");
-            await _identityService.CreateUserAsync("test2@wp.pl", "Test1234567", "User");
+            _identityService.CreateUserAsync(_adminEmail, _adminPassword, "Admin").GetAwaiter().GetResult();
         }
 
         public override void Down()

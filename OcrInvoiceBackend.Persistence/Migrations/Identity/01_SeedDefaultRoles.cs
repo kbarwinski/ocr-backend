@@ -18,10 +18,10 @@ namespace OcrInvoiceBackend.Persistence.Migrations.Identity
             _identityService = identityService;
         }
 
-        public async override void Up()
+        public override void Up()
         {
-            await _identityService.CreateRoleAsync("Admin");
-            await _identityService.CreateRoleAsync("User");
+            _identityService.CreateRoleAsync("Admin").GetAwaiter().GetResult();
+            _identityService.CreateRoleAsync("User").GetAwaiter().GetResult();
         }
 
         public override void Down()
