@@ -14,6 +14,7 @@ using OcrInvoiceBackend.Application.Features.InvoiceFeatures.Commands.AnalyzeInv
 using OcrInvoiceBackend.Application.Features.InvoiceFeatures.Commands.UpdateInvoiceDetails;
 using OcrInvoiceBackend.Domain.Entities;
 using OcrInvoiceBackend.Application.Features.InvoiceFeatures.Queries.GetInvoices;
+using OcrInvoiceBackend.Application.Features.InvoiceFeatures.Commands.GenerateRandomInvoicePdf;
 
 namespace OcrInvoiceBackend.API.Controllers
 {
@@ -119,6 +120,15 @@ namespace OcrInvoiceBackend.API.Controllers
 
             await _mediator.Send(request, cancellationToken);
             return NoContent();
+        }
+
+        [HttpPost]
+        [Route("generate")]
+        public async Task<ActionResult<byte[]>> GenerateRandomInvoicePdf(CancellationToken cancellationToken)
+        {
+            var response = await _mediator.Send(new GenerateRandomInvoicePdfCommand(), cancellationToken);
+
+            return File(response, "application/pdf");
         }
     }
 }

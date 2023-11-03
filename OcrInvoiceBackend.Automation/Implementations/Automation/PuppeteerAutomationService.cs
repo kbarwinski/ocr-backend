@@ -1,10 +1,6 @@
 ﻿using OcrInvoiceBackend.Application.Services.Automation;
 using PuppeteerSharp;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using PuppeteerSharp.Media;
 
 namespace OcrInvoiceBackend.Implementations.Automation
 {
@@ -17,10 +13,18 @@ namespace OcrInvoiceBackend.Implementations.Automation
         public string CurrentPageUrl { get; set; }
         public IPage CurrentPage { get; set; }
 
-        public List<String> PageHistory { get; set; }
+        public List<string> PageHistory { get; set; }
+
+        public PuppeteerAutomationService()
+        {
+            if (BrowserInstance == null)
+                InitializeService().GetAwaiter().GetResult();
+        }
 
         public async Task InitializeService()
         {
+            PageHistory = new List<string>();
+
             using var browserFetcher = new BrowserFetcher();
             await browserFetcher.DownloadAsync(BrowserFetcher.DefaultChromiumRevision);
 
@@ -30,10 +34,29 @@ namespace OcrInvoiceBackend.Implementations.Automation
             CurrentPage = await BrowserInstance.NewPageAsync();
         }
 
+        private static readonly PdfOptions DefaultOptions = new PdfOptions
+        {
+            Format = PaperFormat.A4,
+            PrintBackground = true
+        };
+
+        public async Task<byte[]> GeneratePdfFromHtml(string rawHtml)
+        {
+            var options = DefaultOptions;
+
+            var page = await BrowserInstance.NewPageAsync();
+            await page.SetContentAsync(rawHtml);
+
+            var pdfBytes = await page.PdfDataAsync(options);
+
+            await page.CloseAsync();
+
+            return pdfBytes;
+        }
 
         public async Task NavigateToPage(string pageUrl)
         {
-            if (CurrentPageUrl != null && CurrentPageUrl.Length>0)
+            if (CurrentPageUrl != null && CurrentPageUrl.Length > 0)
                 PageHistory.Add(CurrentPageUrl);
 
             CurrentPageUrl = pageUrl;

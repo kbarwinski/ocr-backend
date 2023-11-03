@@ -45,7 +45,7 @@ namespace OcrInvoiceBackend.TextRecognition.Implementations.Tesseract.ParsingFie
             if (detail == null)
                 return false;
             
-            string nipRegex = @"^\d{10}$"; // Example regex for a 10-digit NIP
+            string nipRegex = @"^\d{10}$";
             bool isValidNIP = Regex.IsMatch(detail.Value, nipRegex);
 
             return isValidNIP;

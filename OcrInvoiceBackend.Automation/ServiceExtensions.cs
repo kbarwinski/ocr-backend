@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OcrInvoiceBackend.Application.Services.Automation;
+using OcrInvoiceBackend.Automation.Implementations.Automation;
 using OcrInvoiceBackend.Automation.Implementations.TargetPages;
 using OcrInvoiceBackend.Implementations.Automation;
 using System;
@@ -18,6 +19,8 @@ namespace OcrInvoiceBackend.Automation
         {
             services.AddSingleton<IBrowserAutomationService, PuppeteerAutomationService>();
             services.AddSingleton<ITargetPageService, SaldeoTargetPageService>();
+
+            services.AddSingleton<IInvoiceGeneratorService, InvoiceGeneratorService>();
         }
     }
 }

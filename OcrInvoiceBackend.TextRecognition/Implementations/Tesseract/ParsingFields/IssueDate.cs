@@ -67,7 +67,7 @@ namespace OcrInvoiceBackend.TextRecognition.Implementations.Tesseract.ParsingFie
                 {
                     var reg = @"\b\d{2,4}[-./]\d{2}[-./]\d{2,4}\b";
                     var dateParsingRes = new RegexRule(reg).Parse(toParse.Substring(parsingRes.FoundIndex));
-
+                    
                     if (dateParsingRes?.FoundText != null)
                         return new Detail { Name = Name, Value = DateParsingHelper.ConvertToStandardFormat(dateParsingRes.FoundText), Certainty = parsingRes.Certainty * dateParsingRes.Certainty };
                 }

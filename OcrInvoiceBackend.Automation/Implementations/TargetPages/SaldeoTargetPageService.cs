@@ -29,7 +29,6 @@ namespace OcrInvoiceBackend.Automation.Implementations.TargetPages
 
         public async Task PrepareTargetPage(IPreparationArgs args)
         {
-            await _automationService.InitializeService();
             await _automationService.NavigateToPage("https://saldeo.brainshare.pl/");
 
             var properArgs = args as ISaldeoPreparationArgs;

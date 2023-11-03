@@ -11,6 +11,7 @@ namespace OcrInvoiceBackend.Application.Services.Automation
         string CurrentPageUrl { get; }
         string ProviderName { get; }
 
+        Task<byte[]> GeneratePdfFromHtml(string rawHtml);
         Task InitializeService();
         Task NavigateToPage(string pageUrl);
 
