@@ -4,7 +4,7 @@ using PuppeteerSharp.Media;
 
 namespace OcrInvoiceBackend.Implementations.Automation
 {
-    public class PuppeteerAutomationService : IBrowserAutomationService
+    public class PuppeteerAutomationService : IBrowserAutomationService, IDisposable
     {
         public IBrowser BrowserInstance { get; set; }
 
@@ -73,6 +73,12 @@ namespace OcrInvoiceBackend.Implementations.Automation
         {
             await CurrentPage.WaitForSelectorAsync(selector);
             await CurrentPage.TypeAsync(selector, text);
+        }
+
+        public void Dispose()
+        {
+            if (BrowserInstance != null)
+                BrowserInstance.Dispose();
         }
     }
 }
