@@ -20,9 +20,25 @@ namespace OcrInvoiceBackend.Application.Repositories
         void Delete(T entity);
         void DeleteRange(IEnumerable<T> entities);
 
-        Task<T?> Get(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties);
+        Task<T?> Get(
+            Expression<Func<T, bool>> predicate,
+            CancellationToken cancellationToken,
+            params Expression<Func<T, object>>[] includeProperties);
+
+        Task<List<T>> GetOrdered(
+            Expression<Func<T, bool>> predicate,
+            string sortingOrders,
+            Dictionary<string, Expression<Func<T, object>>> orderPredicates,
+            CancellationToken cancellationToken,
+            params Expression<Func<T, object>>[] includeProperties);
+
         Task<List<T>> GetAll(CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties);
-        Task<List<T>> GetWhere(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties);
+
+        Task<List<T>> GetWhere(
+            Expression<Func<T, bool>> predicate,
+            CancellationToken cancellationToken,
+            params Expression<Func<T, object>>[] includeProperties);
+
         Task<(List<T>, PaginationResponse)> GetFilteredAndOrderedPage(
         PaginationQuery pagination,
         Dictionary<Expression<Func<T, bool>>, bool> filterPredicates,

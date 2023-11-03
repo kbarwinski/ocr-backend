@@ -132,5 +132,18 @@ namespace OcrInvoiceBackend.Persistence.Repositories
 
             return query.ToListAsync(cancellationToken);
         }
+
+        public Task<List<T>> GetOrdered(Expression<Func<T, bool>> predicate, string sortingOrders, Dictionary<string, Expression<Func<T, object>>> orderPredicates, CancellationToken cancellationToken, params Expression<Func<T, object>>[] includeProperties)
+        {
+            IQueryable<T> query = Context.Set<T>();
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+            query = query.Where(predicate);
+            query = query.Order(sortingOrders, orderPredicates);
+
+            return query.ToListAsync(cancellationToken);
+        }
     }
 }

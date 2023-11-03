@@ -1,4 +1,5 @@
 ﻿using OcrInvoiceBackend.Application.Services.Automation;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace OcrInvoiceBackend.Automation.Implementations.Automation
@@ -33,6 +34,7 @@ namespace OcrInvoiceBackend.Automation.Implementations.Automation
             NetValue,
             VatPercent,
             GrossValue,
+            Currency,
 
             TotalNetValue,
             TotalGrossValue,
@@ -64,12 +66,14 @@ namespace OcrInvoiceBackend.Automation.Implementations.Automation
             private string[] randomPaymentMethod = { "Przelew", "Gotówka", "Karta" };
             private string[] randomBankNumber = { "PL61 1090 1014 0000 0712 1981 2874", "PL91 1240 1037 1111 0010 3946 7890", "PL50 1234 5678 1234 5678 1234 5678" };
             private string[] randomNotes = { "Zapłacono z góry", "Oczekiwanie na płatność", "Uwzględnić rabat 10%" };
+            private string[] randomCurrencies = { "zł", "PLN" };
 
             private string[] randomItemNames = { "Przedmiot 1", "Przedmiot 2", "Przedmiot 3", "Przedmiot 4" };
 
             private string paymentType;
             private DateTime baseDate;
             private int vatTax;
+            private string currency;
 
             private int price;
             private int qty;
@@ -89,6 +93,7 @@ namespace OcrInvoiceBackend.Automation.Implementations.Automation
                 paymentType = PickRandomStringFromAnArray(randomPaymentMethod);
                 baseDate = DateTime.Now.AddDays(_random.Next(-1000, 1000));
                 vatTax = 23;
+                currency = PickRandomStringFromAnArray(randomCurrencies);
 
                 GeneratedValues = new Dictionary<PlaceholderValueType, Func<string>>()
                 {
@@ -111,6 +116,7 @@ namespace OcrInvoiceBackend.Automation.Implementations.Automation
                     { PlaceholderValueType.BankNumber, () => PickRandomStringFromAnArray(randomBankNumber) },
                     { PlaceholderValueType.VatPercent, () => vatTax.ToString() + " %" },
                     { PlaceholderValueType.PaymentMethod, () => paymentType },
+                    { PlaceholderValueType.Currency, () => currency },
 
                     { PlaceholderValueType.TotalGrossValue, () => totalGross.ToString() },
                     { PlaceholderValueType.TotalNetValue, () => totalNet.ToString() },
@@ -133,10 +139,10 @@ namespace OcrInvoiceBackend.Automation.Implementations.Automation
                 price = _random.Next(1, 2000);
 
                 GeneratedValues[PlaceholderValueType.ItemDescription] = () => PickRandomStringFromAnArray(randomItemNames);
-                GeneratedValues[PlaceholderValueType.ItemPrice] = () => price.ToString();
+                GeneratedValues[PlaceholderValueType.ItemPrice] = () => price.ToString() + " " + currency;
                 GeneratedValues[PlaceholderValueType.ItemQuantity] = () => qty.ToString();
-                GeneratedValues[PlaceholderValueType.GrossValue] = () => (price * qty).ToString();
-                GeneratedValues[PlaceholderValueType.NetValue] = () => ((price * qty) * vatTax / 100).ToString();
+                GeneratedValues[PlaceholderValueType.GrossValue] = () => (price * qty).ToString() + " " + currency;
+                GeneratedValues[PlaceholderValueType.NetValue] = () => ((price * qty) * vatTax / 100).ToString() + " " + currency;
 
                 totalGross += price * qty;
                 totalNet += (price * qty) * vatTax / 100;
