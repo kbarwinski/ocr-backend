@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OcrInvoiceBackend.Application.Features.UserFeatures.Commands.SignInUser;
+using OcrInvoiceBackend.Application.Features.UserFeatures.Commands.SignOutUser;
 using OcrInvoiceBackend.Application.Features.UserFeatures.Commands.SignUpUser;
 
 namespace OcrInvoiceBackend.API.Controllers
@@ -30,6 +31,16 @@ namespace OcrInvoiceBackend.API.Controllers
         {
             var response = await _mediator.Send(request, cancellationToken);
             return Ok(response);
+        }
+
+
+        [HttpPost]
+        [Route("signout")]
+        public async Task<ActionResult> SignOut(CancellationToken cancellationToken)
+        {            
+            await _mediator.Send(new SignOutUserCommand(), cancellationToken);
+
+            return NoContent();
         }
     }
 }
