@@ -46,7 +46,9 @@ namespace OcrInvoiceBackend.Application.Features.InvoiceFeatures.Commands.Upload
             {
                 using var scope = _serviceScopeFactory.CreateScope();
 
-                var logger = scope.ServiceProvider.GetRequiredService<ILogger>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<UploadInvoicesHandler>>();
+
+                logger.LogInformation("Background upload had started.");
 
                 var invoiceRepository = scope.ServiceProvider.GetRequiredService<IInvoiceRepository>();
                 var statisticsRepository = scope.ServiceProvider.GetRequiredService<IStatisticsRepository>();
