@@ -79,34 +79,34 @@ namespace OcrInvoiceBackend.Application.Features.InvoiceFeatures.Commands.Upload
 
                         logger.LogInformation("Handling file upload in the background had ended.");
                     }
+
+
+
+                    logger.LogInformation("Context created multiple invoices.");
+
+                    invoiceRepository.CreateRange(invoiceEntities);
+
+                    var endUploadTime = DateTime.Now;
+
+                    var totalUploadTime = (endUploadTime - startUploadTime).TotalSeconds;
+
+                    var todayStats = await statisticsRepository.GetTodayStatistics();
+
+                    todayStats.InvoicesUploaded += invoiceEntities.Count;
+
+                    todayStats.TotalUploadTime += totalUploadTime;
+                    todayStats.AverageUploadTime = todayStats.TotalUploadTime / todayStats.InvoicesUploaded;
+
+                    statisticsRepository.Update(todayStats);
+
+                    await unitOfWork.Save(cancellationToken);
+
+                    logger.LogInformation("Context saved.");
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex.Message);
+                    logger.LogError(ex);
                 }
-
-
-                logger.LogInformation("Context created multiple invoices.");
-
-                invoiceRepository.CreateRange(invoiceEntities);
-
-                var endUploadTime = DateTime.Now;
-
-                var totalUploadTime = (endUploadTime - startUploadTime).TotalSeconds;
-
-                var todayStats = await statisticsRepository.GetTodayStatistics();
-
-                todayStats.InvoicesUploaded += invoiceEntities.Count;
-
-                todayStats.TotalUploadTime += totalUploadTime;
-                todayStats.AverageUploadTime = todayStats.TotalUploadTime / todayStats.InvoicesUploaded;
-
-                statisticsRepository.Update(todayStats);
-
-                await unitOfWork.Save(cancellationToken);
-
-                logger.LogInformation("Context saved.");
-
                 return "UploadCompleted";
             });
         }
