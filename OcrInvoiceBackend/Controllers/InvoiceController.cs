@@ -53,6 +53,7 @@ namespace OcrInvoiceBackend.API.Controllers
             return NoContent();
         }
 
+
         [HttpPost]
         [Route("{id}/scan")]
         public async Task<ActionResult<FullInvoiceDto>> ScanInvoice(string id, CancellationToken cancellationToken)
