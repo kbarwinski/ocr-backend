@@ -37,6 +37,7 @@ namespace OcrInvoiceBackend.Application.Features.InvoiceFeatures.Commands.Upload
 
                 using var stream = new MemoryStream();
                 await file.CopyToAsync(stream, cancellationToken);
+
                 fileDataList.Add(stream.ToArray());
                 _logger.LogInformation(file.FileName + "copied and added to an array.");
 
@@ -50,31 +51,38 @@ namespace OcrInvoiceBackend.Application.Features.InvoiceFeatures.Commands.Upload
 
                 logger.LogInformation("Background upload had started.");
 
-                var invoiceRepository = scope.ServiceProvider.GetRequiredService<IInvoiceRepository>();
-                var statisticsRepository = scope.ServiceProvider.GetRequiredService<IStatisticsRepository>();
-                var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
-
-                var imageManipulatorService = scope.ServiceProvider.GetRequiredService<IImageManipulatorService>();
-
-                var startUploadTime = DateTime.Now;
-
-                var invoiceEntities = new List<Invoice>();
-
-                foreach (var fileData in fileDataList)
+                try
                 {
-                    logger.LogInformation("Handling file upload in the background had started.");
+                    var invoiceRepository = scope.ServiceProvider.GetRequiredService<IInvoiceRepository>();
+                    var statisticsRepository = scope.ServiceProvider.GetRequiredService<IStatisticsRepository>();
+                    var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
-                    var cfg = imageManipulatorService.DefaultCfg;
-                    cfg.FileExtension = request.Type.ToString();
+                    var imageManipulatorService = scope.ServiceProvider.GetRequiredService<IImageManipulatorService>();
 
-                    invoiceEntities.Add(new Invoice
+                    var startUploadTime = DateTime.Now;
+
+                    var invoiceEntities = new List<Invoice>();
+
+                    foreach (var fileData in fileDataList)
                     {
-                        Name = DateTime.Now.ToString(),
-                        FileData = imageManipulatorService.PrepareFile(fileData, cfg),
-                        FileType = FileType.JPG,
-                    });
+                        logger.LogInformation("Handling file upload in the background had started.");
 
-                    logger.LogInformation("Handling file upload in the background had ended.");
+                        var cfg = imageManipulatorService.DefaultCfg;
+                        cfg.FileExtension = request.Type.ToString();
+
+                        invoiceEntities.Add(new Invoice
+                        {
+                            Name = DateTime.Now.ToString(),
+                            FileData = imageManipulatorService.PrepareFile(fileData, cfg),
+                            FileType = FileType.JPG,
+                        });
+
+                        logger.LogInformation("Handling file upload in the background had ended.");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogError(ex.Message);
                 }
 
 

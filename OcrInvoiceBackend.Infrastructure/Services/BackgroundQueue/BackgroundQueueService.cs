@@ -42,6 +42,7 @@ namespace OcrInvoiceBackend.Infrastructure.Services.BackgroundQueue
                 }
                 catch (Exception ex)
                 {
+                    throw;
                 }
             }
         }
