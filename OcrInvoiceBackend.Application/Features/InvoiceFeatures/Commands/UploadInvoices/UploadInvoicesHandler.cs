@@ -105,7 +105,7 @@ namespace OcrInvoiceBackend.Application.Features.InvoiceFeatures.Commands.Upload
                 }
                 catch (Exception ex)
                 {
-                    logger.LogError(ex);
+                    logger.LogError(ex.Message);
                 }
                 return "UploadCompleted";
             });
